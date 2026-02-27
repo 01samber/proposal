@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Proposal Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    :root {
+      --card-bg: #ffffff;
+      --body-bg: linear-gradient(160deg, #e3f2fd 0%, #ffffff 35%, #f5faff 65%, #e8f4fc 100%);
+      --text-primary: #0d47a1;
+      --text-secondary: #1976d2;
+      --text-muted: #64748b;
+      --border-color: #bbdefb;
+      --surface: #e3f2fd;
+      --surface-hover: #bbdefb;
+      --accent: #1976d2;
+      --accent-light: #e3f2fd;
+      --grand-total-bg: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      --grand-total-color: #ffffff;
+      --shadow: 0 20px 25px -5px rgba(21, 101, 192, 0.12);
+    }
+    body {
+      background: var(--body-bg);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    .proposal-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    .proposal-body { padding: 2.5rem; }
+    .logo { max-width: 220px; height: auto; display: block; }
+    .section-title {
+      color: #0d47a1;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+      padding-left: 1rem;
+      border-left: 4px solid var(--accent);
+    }
+    .form-label { font-weight: 600; color: #1976d2; font-size: 0.875rem; }
+    .form-control {
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      transition: all 0.2s ease;
+      background: var(--card-bg);
+      color: #1e293b;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-light);
+    }
+    .input-group-text {
+      background: var(--surface);
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+    .input-group:focus-within .input-group-text { border-color: var(--accent); }
+    .form-control::placeholder { color: var(--text-muted); }
+    .target-box {
+      background: var(--accent-light);
+      border: 2px solid rgba(25, 118, 210, 0.25);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-weight: 700;
+      color: #0d47a1;
+      font-size: 1.05rem;
+    }
+    textarea.form-control { min-height: 110px; resize: vertical; }
+    textarea::placeholder { color: var(--text-muted); font-style: italic; }
+    .day-block {
+      background: var(--surface);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s ease;
+    }
+    .day-block:hover { border-color: var(--accent); }
+    .part-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.5rem; }
+    .part-row .form-control { margin-bottom: 0; }
+    .part-row input[type="text"] { flex: 2; }
+    .qty-cell { display: flex; align-items: center; gap: 0.25rem; min-width: 100px; }
+    .qty-cell input { width: 55px; text-align: center; margin: 0; }
+    .qty-cell input::-webkit-inner-spin-button, .qty-cell input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .qty-cell input { -moz-appearance: textfield; appearance: textfield; }
+    .qty-plus {
+      padding: 0.375rem 0.75rem;
+      min-width: 38px;
+      background: var(--accent) !important;
+      border: none !important;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .qty-plus:hover { opacity: 0.9; transform: scale(1.05); }
+    .part-row .unit-price { flex: 1; min-width: 90px; }
+    .line-total { min-width: 75px; font-weight: 700; color: #1565c0; }
+    .total-row { font-weight: 700; font-size: 1.1rem; color: #1565c0; }
+    .grand-total-box {
+      background: var(--grand-total-bg);
+      color: var(--grand-total-color);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .validation-ok {
+      background: var(--accent-light);
+      color: #0d47a1;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      border: 2px solid rgba(25, 118, 210, 0.3);
+    }
+    .validation-error {
+      background: rgba(185, 28, 28, 0.1);
+      color: #dc2626;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      border: 2px solid rgba(185, 28, 28, 0.3);
+    }
+    .btn-download {
+      min-width: 130px;
+      padding: 0.65rem 1.25rem;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    .btn-download:hover { transform: translateY(-2px); }
+    .action-bar {
+      background: var(--surface);
+      padding: 1.25rem 2rem;
+      border-top: 2px solid var(--border-color);
+    }
+    hr { opacity: 0.4; border-color: var(--border-color) !important; }
+    .page-title {
+      font-weight: 800;
+      color: #0d47a1;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+    }
+    .cost-target-card { background: var(--surface); border: 2px solid var(--border-color); }
+    .parts-header { background: var(--surface); color: #1976d2; }
+    body.pdf-export .no-print { display: none !important; }
+    body.pdf-export #validationResult { display: none !important; }
+    body.pdf-export .print-only-logo { display: block !important; margin-bottom: 1rem; }
+    body.pdf-export .proposal-card {
+      max-width: 794px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: visible;
+    }
+    body.pdf-export .proposal-body { overflow: visible !important; }
+    body.pdf-export .container { overflow: visible !important; }
+    body.pdf-export .proposal-card {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    body.pdf-export .form-control {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #e2e8f0 !important;
+    }
+    body.pdf-export .input-group-text { background: #f8fafc !important; color: #475569 !important; border-color: #e2e8f0 !important; }
+    body.pdf-export .section-title { color: #0d47a1 !important; border-color: #1976d2 !important; }
+    body.pdf-export .form-label { color: #475569 !important; }
+    body.pdf-export .target-box { background: #e3f2fd !important; color: #0d47a1 !important; border-color: rgba(25,118,210,0.2) !important; }
+    body.pdf-export .day-block { background: #f8fafc !important; border-color: #e2e8f0 !important; }
+    body.pdf-export .cost-target-card { background: #f8fafc !important; border-color: #e2e8f0 !important; }
+    body.pdf-export .parts-header { background: #f1f5f9 !important; color: #475569 !important; }
+    body.pdf-export .total-row { color: #1e293b !important; }
+    body.pdf-export .line-total { color: #1e293b !important; }
+    body.pdf-export .page-title { color: #0f172a !important; }
+    body.pdf-export .grand-total-box { background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important; color: #ffffff !important; }
+    body.pdf-export .print-end { margin-bottom: 0 !important; padding-bottom: 2rem !important; }
+    body.pdf-export #narrative { overflow: visible !important; resize: none !important; max-height: none !important; }
+    body.pdf-export #narrative.narrative-hidden-for-capture { display: none !important; }
+    body.pdf-export #narrativePrint.narrative-visible-for-capture { display: block !important; white-space: pre-wrap; word-wrap: break-word; padding: 0.65rem 1rem; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-size: 1rem; line-height: 1.5; }
+    @media print {
+      html { color-scheme: light; }
+      body { background: #fff !important; padding: 15mm !important; }
+      .no-print, #validationResult { display: none !important; }
+      .print-only-logo { display: block !important; margin-bottom: 1rem; }
+      .proposal-card { box-shadow: none; border: none; background: #fff !important; width: 100% !important; max-width: 100% !important; overflow: visible !important; }
+      .proposal-body { padding: 1.5rem 1rem !important; max-width: 100%; overflow: visible; }
+      .container { max-width: 100% !important; padding: 0 10mm !important; }
+      @page { size: A4; margin: 0; }
+      .print-safe { max-width: 100% !important; overflow: visible !important; page-break-inside: avoid; }
+      .narrative-section { page-break-inside: auto !important; }
+      .narrative-print-only { display: block !important; white-space: pre-wrap; word-wrap: break-word; padding: 0.65rem 1rem; border-bottom: 1px solid #333; color: #000; font-size: 1rem; line-height: 1.5; min-height: 0; }
+      #narrative.print-hidden { display: none !important; }
+      input.form-control, textarea.form-control, select.form-control { border: none; border-bottom: 1px solid #333; background: transparent !important; box-shadow: none !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      textarea.form-control { overflow: visible !important; resize: none !important; }
+      .grand-total-box { background: #1565c0 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .print-end { margin-bottom: 0 !important; padding-bottom: 1.5rem !important; }
+      .section-title { margin-top: 1.25rem; }
+      #narrative { overflow: visible !important; resize: none !important; max-height: none !important; }
+      #narrative.print-hidden { display: none !important; }
+    }
+    .print-only-logo { display: none; }
+    .narrative-print-only { display: none; }
+  </style>
+</head>
+<body class="py-4">
+  <div class="container" id="proposalContainer">
+    <div class="proposal-card print-safe">
+      <div class="proposal-body" id="proposalContent">
+        <img src="data:image/jpeg;base64,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" alt="Company Logo" class="logo print-only-logo">
+        <div class="d-flex flex-wrap align-items-center gap-4 mb-4 no-print">
+          <img src="data:image/jpeg;base64,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" alt="Company Logo" class="logo">
+          <div>
+            <h1 class="page-title mb-1">Company Proposal Form</h1>
+            <p class="text-body-secondary mb-0 small">Professional estimate & proposal generator</p>
+          </div>
+        </div>
+
+        <div class="no-print mb-4 p-4 rounded-3 cost-target-card card">
+          <h2 class="section-title">Cost & Target</h2>
+          <div class="row g-3 mb-2">
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Full Cost of Job (x)</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="fullCost" class="form-control" step="0.01" min="0" placeholder="0.00">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Profit Multiplier (y)</label>
+              <div class="input-group">
+                <input type="number" id="multiplier" class="form-control" step="0.1" min="0" placeholder="20">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="target-box">Target Grand Total: $<span id="targetGrandTotal"></span></div>
+        </div>
+
+        <hr class="my-4 print-hr">
+
+        <div class="mb-4 print-safe">
+          <label class="form-label fw-medium">WO# (Work Order Number)</label>
+          <input type="text" id="woNumber" class="form-control" placeholder="Enter work order number or identity">
+        </div>
+
+        <div class="mb-4 print-safe narrative-section">
+          <label class="form-label fw-medium">Narrative</label>
+          <textarea id="narrative" class="form-control" rows="4" placeholder="Following our technician's inspection, it was determined that the dishwasher requires replacement along with certain plumbing supply components. Once the necessary replacements are completed, we will thoroughly test the system to ensure everything is functioning properly and efficiently."></textarea>
+          <div id="narrativePrint" class="narrative-print-only" style="display:none;"></div>
+        </div>
+
+        <hr class="my-4">
+
+        <h2 class="section-title">Incurred</h2>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Trip</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" id="trip" class="form-control" step="0.01" min="0" placeholder="0.00">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Assessment</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" id="assessment" class="form-control" step="0.01" min="0" placeholder="0.00">
+            </div>
+          </div>
+        </div>
+        <div class="total-row mb-4">Total Incurred: $<span id="incurredTotal"></span></div>
+
+        <hr class="my-4">
+
+        <h2 class="section-title">Labor</h2>
+        <div class="row g-3 mb-2">
+          <div class="col-md-6">
+            <label class="form-label">Tech $/hr</label>
+            <input type="number" id="techRate" class="form-control" min="0" step="1" placeholder="75" onchange="recalc()">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Helper $/hr</label>
+            <input type="number" id="helperRate" class="form-control" min="0" step="1" placeholder="45" onchange="recalc()">
+          </div>
+        </div>
+        <div id="laborDays"></div>
+        <button type="button" class="btn btn-outline-secondary btn-sm no-print mb-2 rounded-pill px-3" onclick="addLaborDay()" style="border-width: 2px;">+ Add Day</button>
+        <div class="total-row mb-4">Total Labor: $<span id="laborTotal"></span></div>
+
+        <hr class="my-4">
+
+        <h2 class="section-title">Parts & Materials</h2>
+        <div class="part-row mb-2 py-2 px-3 rounded-2 parts-header">
+          <span style="flex: 2; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Description</span>
+          <span class="qty-cell" style="min-width: 100px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Qty</span>
+          <span class="unit-price" style="min-width: 90px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Unit $</span>
+          <span class="line-total" style="min-width: 75px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Total</span>
+          <span style="width: 70px;"></span>
+        </div>
+        <div id="partsList"></div>
+        <button type="button" class="btn btn-outline-secondary btn-sm no-print mb-3 rounded-pill px-3" onclick="addPart()" style="border-width: 2px;">+ Add Part/Material</button>
+        <div class="total-row mb-4">Total Parts & Materials: $<span id="partsTotal"></span></div>
+
+        <hr class="my-4">
+
+        <h2 class="section-title">Grand Total of Proposal</h2>
+        <p class="mb-2">Parts & Materials: $<span id="gtParts"></span> + Labor: $<span id="gtLabor"></span> + Incurred: $<span id="gtIncurred"></span></p>
+        <div class="row g-3 mb-2 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">Tax Rate</label>
+            <div class="input-group">
+              <input type="number" id="taxRate" class="form-control" step="0.01" min="0" placeholder="0" oninput="recalc()" onchange="recalc()">
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <p class="mb-1">Subtotal: $<span id="subtotalDisplay"></span> + Tax: $<span id="taxAmountDisplay"></span> = Grand Total</p>
+            <p class="mb-0 small text-body-secondary no-print">Required subtotal to match target: $<span id="requiredSubtotal"></span></p>
+          </div>
+        </div>
+        <div class="grand-total-box print-end" id="grandTotalBox">Grand Total of Proposal: $<span id="grandTotalProposal"></span></div>
+
+        <div id="validationResult" class="no-print"></div>
+      </div>
+
+      <div class="no-print action-bar">
+        <div class="row align-items-center g-3">
+          <div class="col-auto">
+            <span class="badge bg-secondary fs-6 px-3 py-2">Export</span>
+          </div>
+          <div class="col">
+            <div class="btn-group flex-wrap" role="group">
+              <button type="button" class="btn btn-success btn-download" onclick="tryPrint()">Print</button>
+              <button type="button" class="btn btn-info btn-download" onclick="downloadImage()">Image</button>
+              <button type="button" class="btn btn-outline-secondary btn-download" onclick="downloadText()">Text</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getTechRate() { return parseFloat(document.getElementById('techRate')?.value) || 75; }
+    function getHelperRate() { return parseFloat(document.getElementById('helperRate')?.value) || 45; }
+
+    let laborDayCount = 1;
+    let partCount = 1;
+
+    function getVal(id) { const el = document.getElementById(id); return el ? parseFloat(el.value) || 0 : 0; }
+    function setVal(id, v) { const el = document.getElementById(id); if (el) el.textContent = (v === 0 || isNaN(v)) ? '' : v.toFixed(2); }
+
+    function addLaborDay() {
+      laborDayCount++;
+      const day = laborDayCount;
+      const div = document.createElement('div');
+      div.className = 'day-block print-safe';
+      div.id = 'day' + day;
+      div.innerHTML = `
+        <div class="fw-semibold mb-2">Day ${day}</div>
+        <div class="row g-2">
+          <div class="col-6 col-md-3"><label class="form-label small">Technicians</label><input type="number" class="form-control form-control-sm" min="0" step="1" data-day="${day}" data-type="techs" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Tech Hours</label><input type="number" class="form-control form-control-sm" min="0" step="0.25" data-day="${day}" data-type="techHrs" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Helpers</label><input type="number" class="form-control form-control-sm" min="0" step="1" data-day="${day}" data-type="helpers" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Helper Hours</label><input type="number" class="form-control form-control-sm" min="0" step="0.25" data-day="${day}" data-type="helperHrs" value="0" onchange="recalc()"></div>
+        </div>
+        <button type="button" class="btn btn-outline-danger btn-sm mt-2 no-print rounded-pill px-3" onclick="removeLaborDay(${day})" style="border-width: 2px;">Remove Day</button>
+      `;
+      document.getElementById('laborDays').appendChild(div);
+      recalc();
+    }
+
+    function removeLaborDay(day) {
+      if (laborDayCount <= 1) return;
+      document.getElementById('day' + day)?.remove();
+      laborDayCount--;
+      recalc();
+    }
+
+    function addPart() {
+      partCount++;
+      const id = partCount;
+      const div = document.createElement('div');
+      div.className = 'part-row';
+      div.id = 'part' + id;
+      div.innerHTML = `
+        <input type="text" class="form-control form-control-sm" placeholder="Part or material ${id}" data-part="${id}">
+        <div class="qty-cell">
+          <input type="number" class="form-control form-control-sm" min="0" step="1" value="0" data-part="${id}" data-qty onchange="recalc()">
+          <button type="button" class="btn btn-primary btn-sm qty-plus no-print" onclick="incrementQty(${id})" title="Add one more">+</button>
+        </div>
+        <input type="number" class="form-control form-control-sm unit-price" min="0" step="0.01" placeholder="0.00" data-part="${id}" data-unitprice onchange="recalc()" oninput="recalc()">
+        <span class="line-total" data-part="${id}" data-linetotal></span>
+        <button type="button" class="btn btn-outline-danger btn-sm no-print rounded-pill" onclick="removePart(${id})" style="border-width: 2px;">Remove</button>
+      `;
+      document.getElementById('partsList').appendChild(div);
+      recalc();
+    }
+
+    function incrementQty(partId) {
+      const el = document.querySelector('#part' + partId + ' [data-qty]');
+      if (el) { el.value = (parseInt(el.value) || 0) + 1; recalc(); }
+    }
+
+    function removePart(id) {
+      document.getElementById('part' + id)?.remove();
+      recalc();
+    }
+
+    function calcLabor() {
+      let total = 0;
+      for (let d = 1; d <= laborDayCount; d++) {
+        const dayEl = document.getElementById('day' + d);
+        if (!dayEl) continue;
+        const techs = parseFloat(dayEl.querySelector('[data-type="techs"]')?.value) || 0;
+        const techHrs = parseFloat(dayEl.querySelector('[data-type="techHrs"]')?.value) || 0;
+        const helpers = parseFloat(dayEl.querySelector('[data-type="helpers"]')?.value) || 0;
+        const helperHrs = parseFloat(dayEl.querySelector('[data-type="helperHrs"]')?.value) || 0;
+        total += techs * techHrs * getTechRate() + helpers * helperHrs * getHelperRate();
+      }
+      return total;
+    }
+
+    function calcParts() {
+      let total = 0;
+      document.querySelectorAll('.part-row').forEach(row => {
+        if (!row.querySelector('[data-qty]')) return;
+        const qty = parseFloat(row.querySelector('[data-qty]')?.value) || 0;
+        const unitPrice = parseFloat(row.querySelector('[data-unitprice]')?.value) || 0;
+        const lineTotal = qty * unitPrice;
+        total += lineTotal;
+        const ltEl = row.querySelector('[data-linetotal]');
+        if (ltEl) ltEl.textContent = (lineTotal === 0 || isNaN(lineTotal)) ? '' : '$' + lineTotal.toFixed(2);
+      });
+      return total;
+    }
+
+    function recalc() {
+      const x = getVal('fullCost');
+      const y = getVal('multiplier');
+      const target = x * (1 + y / 100);
+      setVal('targetGrandTotal', target);
+
+      const incurred = getVal('trip') + getVal('assessment');
+      setVal('incurredTotal', incurred);
+
+      const labor = calcLabor();
+      setVal('laborTotal', labor);
+
+      const parts = calcParts();
+      setVal('partsTotal', parts);
+
+      const subtotal = incurred + labor + parts;
+      const taxRate = getVal('taxRate');
+      const taxAmount = subtotal * (taxRate / 100);
+      const gt = subtotal + taxAmount;
+
+      const requiredSubtotal = (target > 0 && (1 + taxRate / 100) > 0)
+        ? target / (1 + taxRate / 100) : 0;
+
+      setVal('gtParts', parts);
+      setVal('gtLabor', labor);
+      setVal('gtIncurred', incurred);
+      const subEl = document.getElementById('subtotalDisplay');
+      const taxEl = document.getElementById('taxAmountDisplay');
+      const reqEl = document.getElementById('requiredSubtotal');
+      if (subEl) subEl.textContent = subtotal.toFixed(2);
+      if (taxEl) taxEl.textContent = taxAmount.toFixed(2);
+      if (reqEl) reqEl.textContent = requiredSubtotal.toFixed(2);
+      setVal('grandTotalProposal', gt);
+
+      const res = document.getElementById('validationResult');
+      const diff = Math.abs(gt - target);
+      if (target === 0) {
+        res.innerHTML = '';
+        res.className = '';
+      } else if (diff < 0.01) {
+        res.innerHTML = '✓ Grand total (subtotal + tax) matches target. You may print or download the proposal.';
+        res.className = 'validation-ok';
+      } else {
+        const subtotalDiff = requiredSubtotal - subtotal;
+        const msg = subtotalDiff > 0
+          ? 'Add $' + subtotalDiff.toFixed(2) + ' to subtotal (Parts + Labor + Incurred) to reach the target.'
+          : 'Reduce subtotal by $' + Math.abs(subtotalDiff).toFixed(2) + ' to reach the target.';
+        res.innerHTML = '✗ Mismatch: Grand total ($' + gt.toFixed(2) + ') ≠ target ($' + target.toFixed(2) + '). ' + msg;
+        res.className = 'validation-error';
+      }
+    }
+
+    function canExport() {
+      const res = document.getElementById('validationResult');
+      if (res.classList.contains('validation-error')) {
+        alert('Cannot export: Grand total must match the target. Please correct the figures.');
+        return false;
+      }
+      return true;
+    }
+
+
+    function expandNarrativeForExport() {
+      const ta = document.getElementById('narrative');
+      if (!ta) return;
+      ta.style.overflow = 'hidden';
+      ta.style.minHeight = '0';
+      ta.style.height = '1px';
+      // Multi-pass: scrollHeight can underestimate on first pass with wrapped text
+      let h;
+      for (let i = 0; i < 10; i++) {
+        h = Math.max(ta.scrollHeight, 110);
+        ta.style.height = h + 'px';
+        if (ta.scrollHeight <= ta.clientHeight) break;
+      }
+      ta.style.overflow = 'visible';
+      ta.style.minHeight = '';
+    }
+    function restoreNarrative() {
+      const ta = document.getElementById('narrative');
+      if (!ta) return;
+      ta.style.height = '';
+      ta.style.overflow = '';
+    }
+    function tryPrint() {
+      if (!canExport()) return;
+      expandNarrativeForExport();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.print();
+        });
+      });
+    }
+
+    function downloadImage() {
+      if (!canExport()) return;
+      expandNarrativeForExport();
+      document.body.classList.add('pdf-export');
+      document.body.style.background = '#ffffff';
+      const el = document.querySelector('.proposal-card');
+      const ta = document.getElementById('narrative');
+      const narrativeDiv = document.getElementById('narrativePrint');
+      el.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+      function swapNarrativeForCapture() {
+        if (ta && narrativeDiv) {
+          narrativeDiv.textContent = ta.value || '';
+          narrativeDiv.classList.add('narrative-visible-for-capture');
+          ta.classList.add('narrative-hidden-for-capture');
+        }
+      }
+      function unswapNarrative() {
+        if (ta) ta.classList.remove('narrative-hidden-for-capture');
+        if (narrativeDiv) { narrativeDiv.textContent = ''; narrativeDiv.classList.remove('narrative-visible-for-capture'); }
+      }
+
+      function doCapture() {
+        swapNarrativeForCapture();
+        requestAnimationFrame(() => {
+        html2canvas(el, {
+          scale: 2,
+          useCORS: false,
+          logging: false,
+          backgroundColor: '#ffffff',
+          windowWidth: el.scrollWidth,
+          windowHeight: el.scrollHeight
+        }).then(canvas => {
+          try {
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            const name = (document.getElementById('woNumber').value || 'export').replace(/[<>:"/\\|?*]/g, '_');
+            link.download = 'proposal-' + name + '.png';
+            link.href = dataUrl;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } catch (e) {
+            alert('Image export failed. Try using Print instead.');
+          }
+          unswapNarrative();
+          document.body.style.background = '';
+          document.body.classList.remove('pdf-export');
+          restoreNarrative();
+        }).catch(() => {
+          alert('Image export failed. Try using Print instead.');
+          unswapNarrative();
+          document.body.style.background = '';
+          document.body.classList.remove('pdf-export');
+          restoreNarrative();
+        });
+        });
+      }
+
+      document.fonts.ready.then(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setTimeout(doCapture, 300);
+          });
+        });
+      });
+    }
+
+    function downloadText() {
+      const wo = document.getElementById('woNumber').value || 'N/A';
+      const narrative = document.getElementById('narrative').value || '';
+      const incurred = getVal('trip') + getVal('assessment');
+      const labor = calcLabor();
+      const parts = calcParts();
+      const subtotal = incurred + labor + parts;
+      const taxRate = getVal('taxRate');
+      const taxAmount = subtotal * (taxRate / 100);
+      const grandTotal = subtotal + taxAmount;
+
+      let lines = [
+        'PROPOSAL',
+        '========',
+        '',
+        'WO#: ' + wo,
+        '',
+        'Narrative:',
+        narrative,
+        '',
+        'Incurred:',
+        '  Trip: $' + getVal('trip').toFixed(2),
+        '  Assessment: $' + getVal('assessment').toFixed(2),
+        '  Total: $' + incurred.toFixed(2),
+        '',
+        'Labor Total: $' + labor.toFixed(2),
+        '',
+        'Parts & Materials:'
+      ];
+
+      document.querySelectorAll('.part-row').forEach((row, i) => {
+        const desc = row.querySelector('input[type="text"]')?.value;
+        const qty = row.querySelector('[data-qty]')?.value;
+        const lt = row.querySelector('[data-linetotal]')?.textContent;
+        if (desc || qty || lt) lines.push('  - ' + (desc || 'Item') + ' x' + (qty || '1') + ': ' + (lt || '$0.00'));
+      });
+
+      lines.push('  Total Parts & Materials: $' + parts.toFixed(2));
+      lines.push('');
+      lines.push('Subtotal: $' + subtotal.toFixed(2));
+      if (taxRate > 0) lines.push('Tax (' + taxRate.toFixed(2) + '%): $' + taxAmount.toFixed(2));
+      lines.push('');
+      lines.push('GRAND TOTAL: $' + grandTotal.toFixed(2));
+
+      const blob = new Blob([lines.join('\r\n')], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.download = 'proposal-' + (wo !== 'N/A' ? wo : 'export') + '.txt';
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    window.addEventListener('beforeprint', () => {
+      expandNarrativeForExport();
+      const ta = document.getElementById('narrative');
+      const div = document.getElementById('narrativePrint');
+      if (ta && div) {
+        div.textContent = ta.value || '';
+        div.style.display = 'block';
+        ta.classList.add('print-hidden');
+      }
+    });
+    window.addEventListener('afterprint', () => {
+      const ta = document.getElementById('narrative');
+      const div = document.getElementById('narrativePrint');
+      if (ta) ta.classList.remove('print-hidden');
+      if (div) { div.textContent = ''; div.style.display = 'none'; }
+      restoreNarrative();
+    });
+
+    document.getElementById('fullCost').addEventListener('input', recalc);
+    document.getElementById('multiplier').addEventListener('input', recalc);
+    document.getElementById('trip').addEventListener('input', recalc);
+    document.getElementById('assessment').addEventListener('input', recalc);
+    document.getElementById('taxRate').addEventListener('input', recalc);
+
+    function init() {
+      const laborDiv = document.getElementById('laborDays');
+      laborDiv.innerHTML = '';
+      const d = document.createElement('div');
+      d.className = 'day-block print-safe';
+      d.id = 'day1';
+      d.innerHTML = `
+        <div class="fw-semibold mb-2">Day 1</div>
+        <div class="row g-2">
+          <div class="col-6 col-md-3"><label class="form-label small">Technicians</label><input type="number" class="form-control form-control-sm" min="0" step="1" data-day="1" data-type="techs" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Tech Hours</label><input type="number" class="form-control form-control-sm" min="0" step="0.25" data-day="1" data-type="techHrs" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Helpers</label><input type="number" class="form-control form-control-sm" min="0" step="1" data-day="1" data-type="helpers" value="0" onchange="recalc()"></div>
+          <div class="col-6 col-md-3"><label class="form-label small">Helper Hours</label><input type="number" class="form-control form-control-sm" min="0" step="0.25" data-day="1" data-type="helperHrs" value="0" onchange="recalc()"></div>
+        </div>
+      `;
+      laborDiv.appendChild(d);
+
+      const partsDiv = document.getElementById('partsList');
+      partsDiv.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'part-row';
+      div.id = 'part1';
+      div.innerHTML = `
+        <input type="text" class="form-control form-control-sm" placeholder="Part or material 1" data-part="1">
+        <div class="qty-cell">
+          <input type="number" class="form-control form-control-sm" min="0" step="1" value="0" data-part="1" data-qty onchange="recalc()">
+          <button type="button" class="btn btn-primary btn-sm qty-plus no-print" onclick="incrementQty(1)" title="Add one more">+</button>
+        </div>
+        <input type="number" class="form-control form-control-sm unit-price" min="0" step="0.01" placeholder="0.00" data-part="1" data-unitprice onchange="recalc()" oninput="recalc()">
+        <span class="line-total" data-part="1" data-linetotal></span>
+      `;
+      partsDiv.appendChild(div);
+      partCount = 1;
+      recalc();
+    }
+    init();
+  </script>
+</body>
+</html>

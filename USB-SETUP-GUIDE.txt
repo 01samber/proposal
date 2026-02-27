@@ -1,0 +1,72 @@
+================================================================================
+  PROPOSAL FORM - USB SETUP & USAGE GUIDE
+================================================================================
+
+PART 1: BUILD THE APP (Do this ONCE on your development laptop)
+================================================================
+
+1. Open Command Prompt or PowerShell
+
+2. Go to the proposal folder:
+   cd c:\Users\Lenovo\Desktop\proposal
+
+3. Install dependencies (only needed first time):
+   npm install
+
+4. Build the portable app:
+   npm run build
+
+5. Wait for the build to finish (may take 1-2 minutes)
+
+6. The app is now in the "dist" folder:
+   c:\Users\Lenovo\Desktop\proposal\dist\Proposal Form 1.0.0.exe
+
+
+PART 2: COPY TO YOUR USB DRIVE
+================================================================
+
+1. Plug your USB drive into your laptop
+
+2. Open File Explorer and find your USB drive (e.g. E:, F:, or D:)
+
+3. Open another File Explorer window and go to:
+   c:\Users\Lenovo\Desktop\proposal\dist
+
+4. Copy "Proposal Form 1.0.0.exe" from the dist folder
+
+5. Paste it onto your USB drive
+
+6. You can create a folder on the USB (e.g. "Proposal Form") and put the .exe inside it if you like
+
+7. Safely eject the USB drive
+
+
+PART 3: RUN ON ANOTHER LAPTOP (No Node.js or tools needed)
+================================================================
+
+1. Plug the USB drive into the other laptop
+
+2. Open File Explorer
+
+3. Click on the USB drive (e.g. "Removable Disk (E:)")
+
+4. Find "Proposal Form 1.0.0.exe"
+
+5. Double-click the file to start the app
+
+6. If Windows shows "Windows protected your PC":
+   - Click "More info"
+   - Click "Run anyway"
+   (This happens because the app is not digitally signed)
+
+7. The Proposal Form window will open. Fill it out and use Print, Image, or Text export as usual.
+
+
+QUICK REFERENCE
+================================================================
+
+Build (development laptop):    npm run build
+Copy to USB:                   dist\Proposal Form 1.0.0.exe
+Run on any laptop:             Double-click the .exe from the USB
+
+================================================================================

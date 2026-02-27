@@ -1,0 +1,26 @@
+{
+  "name": "company-proposal-form",
+  "version": "1.0.0",
+  "description": "Professional proposal form - create estimates and export as PDF, image, or text",
+  "main": "main.js",
+  "build": {
+    "appId": "com.company.proposal",
+    "productName": "Proposal Form",
+    "files": ["index.html", "main.js"],
+    "win": {
+      "target": "portable",
+      "icon": "proposal-icon.png"
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build:installer": "electron-builder --win"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  }
+}
