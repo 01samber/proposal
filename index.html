@@ -631,7 +631,9 @@
       const techRate = getTechRate();
       const helperRate = getHelperRate();
       const sep = '--------------------------------------------------------------------------------';
-      const laborLines = ['Labor:', ''];
+      const NL = '\r\n';
+
+      const laborParts = [];
       for (let d = 1; d <= laborDayCount; d++) {
         const dayEl = document.getElementById('day' + d);
         if (!dayEl) continue;
@@ -640,61 +642,61 @@
         const helpers = parseFloat(dayEl.querySelector('[data-type="helpers"]')?.value) || 0;
         const helperHrs = parseFloat(dayEl.querySelector('[data-type="helperHrs"]')?.value) || 0;
         if (techs === 0 && helpers === 0) continue;
-        laborLines.push('Day ' + d);
-        laborLines.push('');
+        laborParts.push('Day ' + d + NL + NL);
         for (let t = 0; t < techs; t++) {
           const amt = techHrs * techRate;
-          laborLines.push(techHrs + ' hours labor tech: $' + amt.toFixed(2));
+          laborParts.push(techHrs + ' hours labor tech: $' + amt.toFixed(2) + NL);
         }
         for (let h = 0; h < helpers; h++) {
           const amt = helperHrs * helperRate;
-          laborLines.push(helperHrs + ' hours labor helper: $' + amt.toFixed(2));
+          laborParts.push(helperHrs + ' hours labor helper: $' + amt.toFixed(2) + NL);
         }
-        laborLines.push('');
+        laborParts.push(NL);
       }
-      laborLines.push('Labor Total: $' + labor.toFixed(2));
 
-      let lines = [
-        'PROPOSAL',
-        '========',
-        '',
-        'WO#: ' + wo,
-        '',
-        narrative,
-        '',
-        sep,
-        'Incurred:',
-        '  Trip: $' + getVal('trip').toFixed(2),
-        '',
-        '  Assessment: $' + getVal('assessment').toFixed(2),
-        '',
-        '  Total: $' + incurred.toFixed(2),
-        sep,
-        ...laborLines,
-        sep,
-        'Parts & Materials:'
-      ];
+      let txt = 'PROPOSAL' + NL +
+        '========' + NL + NL +
+        'WO#: ' + wo + NL + NL +
+        (narrative ? narrative.replace(/\r\n/g, '\n').replace(/\n/g, NL) : '') + NL + NL +
+        sep + NL +
+        'Incurred:' + NL +
+        '  Trip: $' + getVal('trip').toFixed(2) + NL + NL +
+        '  Assessment: $' + getVal('assessment').toFixed(2) + NL + NL +
+        '  Total: $' + incurred.toFixed(2) + NL +
+        sep + NL +
+        'Labor:' + NL + NL +
+        laborParts.join('') +
+        'Labor Total: $' + labor.toFixed(2) + NL +
+        sep + NL +
+        'Parts & Materials:' + NL;
 
       document.querySelectorAll('.part-row').forEach((row) => {
-        const desc = (row.querySelector('input[type="text"]')?.value || '').trim();
-        const qty = row.querySelector('[data-qty]')?.value;
-        const lt = row.querySelector('[data-linetotal]')?.textContent;
-        if (desc || qty || lt) lines.push('  - ' + (desc || 'Item') + '  x' + (qty || '1') + ': ' + (lt || '$0.00'));
+        const descInput = row.querySelector('input[type="text"]');
+        const qtyInput = row.querySelector('[data-qty]');
+        const ltEl = row.querySelector('[data-linetotal]');
+        const desc = (descInput?.value || '').trim();
+        const qty = qtyInput?.value;
+        const lt = ltEl?.textContent;
+        if (desc || qty || lt) {
+          txt += '  - ' + (desc || 'Item') + '  x' + (qty || '1') + ': ' + (lt || '$0.00') + NL;
+        }
       });
 
-      lines.push('');
-      lines.push('  Total Parts & Materials: $' + parts.toFixed(2));
-      lines.push(sep);
-      lines.push('Subtotal: $' + subtotal.toFixed(2));
-      if (taxRate > 0) lines.push('Tax (' + taxRate.toFixed(2) + '%): $' + taxAmount.toFixed(2));
-      lines.push('');
-      lines.push('GRAND TOTAL: $' + grandTotal.toFixed(2));
+      txt += NL +
+        '  Total Parts & Materials: $' + parts.toFixed(2) + NL +
+        sep + NL +
+        'Subtotal: $' + subtotal.toFixed(2) + NL;
+      if (taxRate > 0) txt += 'Tax (' + taxRate.toFixed(2) + '%): $' + taxAmount.toFixed(2) + NL;
+      txt += NL + 'GRAND TOTAL: $' + grandTotal.toFixed(2) + NL + NL;
 
-      const blob = new Blob([lines.join('\r\n')], { type: 'text/plain' });
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.download = 'proposal-' + (wo !== 'N/A' ? wo : 'export') + '.txt';
       link.href = URL.createObjectURL(blob);
+      link.style.display = 'none';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
     }
 
