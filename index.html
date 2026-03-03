@@ -630,6 +630,7 @@
 
       const techRate = getTechRate();
       const helperRate = getHelperRate();
+      const sep = '--------------------------------------------------------------------------------';
       const laborLines = ['Labor:', ''];
       for (let d = 1; d <= laborDayCount; d++) {
         const dayEl = document.getElementById('day' + d);
@@ -639,8 +640,7 @@
         const helpers = parseFloat(dayEl.querySelector('[data-type="helpers"]')?.value) || 0;
         const helperHrs = parseFloat(dayEl.querySelector('[data-type="helperHrs"]')?.value) || 0;
         if (techs === 0 && helpers === 0) continue;
-        const visitLabel = 'Day ' + d;
-        laborLines.push(visitLabel);
+        laborLines.push('Day ' + d);
         laborLines.push('');
         for (let t = 0; t < techs; t++) {
           const amt = techHrs * techRate;
@@ -653,7 +653,6 @@
         laborLines.push('');
       }
       laborLines.push('Labor Total: $' + labor.toFixed(2));
-      laborLines.push('');
 
       let lines = [
         'PROPOSAL',
@@ -663,24 +662,29 @@
         '',
         narrative,
         '',
+        sep,
         'Incurred:',
         '  Trip: $' + getVal('trip').toFixed(2),
-        '  Assessment: $' + getVal('assessment').toFixed(2),
-        '  Total: $' + incurred.toFixed(2),
         '',
+        '  Assessment: $' + getVal('assessment').toFixed(2),
+        '',
+        '  Total: $' + incurred.toFixed(2),
+        sep,
         ...laborLines,
+        sep,
         'Parts & Materials:'
       ];
 
-      document.querySelectorAll('.part-row').forEach((row, i) => {
-        const desc = row.querySelector('input[type="text"]')?.value;
+      document.querySelectorAll('.part-row').forEach((row) => {
+        const desc = (row.querySelector('input[type="text"]')?.value || '').trim();
         const qty = row.querySelector('[data-qty]')?.value;
         const lt = row.querySelector('[data-linetotal]')?.textContent;
-        if (desc || qty || lt) lines.push('  - ' + (desc || 'Item') + ' x' + (qty || '1') + ': ' + (lt || '$0.00'));
+        if (desc || qty || lt) lines.push('  - ' + (desc || 'Item') + '  x' + (qty || '1') + ': ' + (lt || '$0.00'));
       });
 
-      lines.push('  Total Parts & Materials: $' + parts.toFixed(2));
       lines.push('');
+      lines.push('  Total Parts & Materials: $' + parts.toFixed(2));
+      lines.push(sep);
       lines.push('Subtotal: $' + subtotal.toFixed(2));
       if (taxRate > 0) lines.push('Tax (' + taxRate.toFixed(2) + '%): $' + taxAmount.toFixed(2));
       lines.push('');
