@@ -630,7 +630,9 @@
 
       const techRate = getTechRate();
       const helperRate = getHelperRate();
-      const sep = '--------------------------------------------------------------------------------';
+      const sep1 = '--------------------------------------------------------------------';
+      const sep2 = '--------------------------------------------------------------------------------';
+      const sep3 = '-------------------------------------------------------------------------------';
       const NL = '\r\n';
 
       const laborParts = [];
@@ -656,18 +658,19 @@
 
       let txt = 'PROPOSAL' + NL +
         '========' + NL + NL +
-        'WO#: ' + wo + NL + NL +
-        (narrative ? narrative.replace(/\r\n/g, '\n').replace(/\n/g, NL) : '') + NL + NL +
-        sep + NL +
-        'Incurred:' + NL +
-        '  Trip: $' + getVal('trip').toFixed(2) + NL + NL +
+        'WO#: ' + wo + NL +
+        sep1 + NL +
+        (narrative ? narrative.replace(/\r\n/g, '\n').replace(/\n/g, NL) : '') + NL +
+        sep2 + NL +
+        'Incurred:' + NL + NL +
+        '  Trip: $' + getVal('trip').toFixed(2) + NL +
         '  Assessment: $' + getVal('assessment').toFixed(2) + NL + NL +
         '  Total: $' + incurred.toFixed(2) + NL +
-        sep + NL +
+        sep2 + NL +
         'Labor:' + NL + NL +
         laborParts.join('') +
         'Labor Total: $' + labor.toFixed(2) + NL +
-        sep + NL +
+        sep2 + NL +
         'Parts & Materials:' + NL;
 
       document.querySelectorAll('.part-row').forEach((row) => {
@@ -684,10 +687,11 @@
 
       txt += NL +
         '  Total Parts & Materials: $' + parts.toFixed(2) + NL +
-        sep + NL +
+        sep2 + NL +
         'Subtotal: $' + subtotal.toFixed(2) + NL;
       if (taxRate > 0) txt += 'Tax (' + taxRate.toFixed(2) + '%): $' + taxAmount.toFixed(2) + NL;
-      txt += NL + 'GRAND TOTAL: $' + grandTotal.toFixed(2) + NL + NL;
+      txt += sep3 + NL +
+        'GRAND TOTAL: $' + grandTotal.toFixed(2) + NL + NL + NL;
 
       const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
